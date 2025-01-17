@@ -48,11 +48,8 @@
       <artifactId>h2</artifactId>
       <version>2.2.224</version>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-jdbc</artifactId>
-      <version>3.4.1</version>
-    </dependency>
+
+
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -63,7 +60,13 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>6.5.1.Final</version>
+      <version>6.6.4.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jpa</artifactId>
+      <version>3.4.1</version>
     </dependency>
 
   </dependencies>
