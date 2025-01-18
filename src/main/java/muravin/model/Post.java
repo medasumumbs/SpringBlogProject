@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "post")
@@ -28,6 +29,9 @@ public class Post {
 
     @Column(name = "picture_base_64")
     private String pictureBase64;
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
 
     private static Integer PREVIEW_LINES_COUNT = 3;
 
