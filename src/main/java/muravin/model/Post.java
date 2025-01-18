@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 @Entity
 @Table(name = "post")
 @AllArgsConstructor
@@ -27,4 +29,15 @@ public class Post {
     @Column(name = "picture_base_64")
     private String pictureBase64;
 
+    private static Integer PREVIEW_LINES_COUNT = 3;
+
+    /// Возвращает первые PREVIEW_LINES_COUNT строк содержимого поста (превью)
+    public String getPreviewText() {
+        StringBuilder sb = new StringBuilder();
+        Arrays.stream(content.split("\n"))
+                .limit(PREVIEW_LINES_COUNT)
+                .forEach(line -> sb.append(line).append("\n"));
+        sb.append("...");
+        return sb.toString();
+    }
 }

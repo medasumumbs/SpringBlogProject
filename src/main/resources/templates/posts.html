@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Лента</title>
+    <link rel="stylesheet" th:href="@{/css/posts.css}"/>
 </head>
 <body>
-<div th:each="post : ${posts}">
+<div class="shadow post" th:each="post : ${posts}">
     <h2 th:text="${post.getTitle()}"></h2>
     <span th:text="${post.getPreviewText()}"></span>
-    <picture th:src="'data:image/png;base64, '+${post.getImageBase64()}"></picture>
+    <br/>
+    <img height="300" width="300" th:src="'data:image/png;base64, '+${post.getPictureBase64()}"></img>
+    <br/>
     <a>TODO - ССЫЛКА НА СТРАНИЦУ ПОСТА</a>
+    <br/>
 </div>
 </body>
 </html>
