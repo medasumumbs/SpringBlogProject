@@ -1,13 +1,14 @@
 -- Главная таблица проекта - хранит в себе все посты в блоге
-create table post (
-    post_id bigint auto_increment,
+create table if not exists post (
+    post_id bigint auto_increment PRIMARY KEY,
     title VARCHAR(512) NOT NULL,
     picture_base_64 clob,
     content clob
 );
-create table comment (
+create table if not exists comment (
     comment_id bigint auto_increment,
-    content varchar(1024);
+    content varchar(1024),
+    post_id bigint,
     foreign key (post_id) references post(post_id)
 );
 
