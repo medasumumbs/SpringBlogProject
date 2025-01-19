@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/posts")
@@ -18,8 +19,12 @@ public class PostsController {
     }
 
     @GetMapping
-    public String getFeed(Model model) {
-        model.addAttribute("posts", postsService.findAll());
+    public String getFeed(Model model, @RequestParam(name = "tag", required = false) String tag) {
+        if (tag == null || tag.isEmpty()) {
+            model.addAttribute("posts", postsService.findAll());
+        } else {
+            model.addAttribute("posts", postsService.findByTag(tag));
+        }
         return "posts";
     }
 }

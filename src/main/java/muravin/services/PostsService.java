@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,8 +27,7 @@ public class PostsService {
 
     public List<Post> findAll() {
         var result = postsRepository.findAll();
-        result.forEach(post -> post.setLikesCount(likesRepository.countLikesByPost(post)));
-        result.forEach(post -> post.setTagsString(createTagsString(post)));
+        result.forEach(this::enrichPost);
         return result;
     }
     private String createTagsString(Post post) {
@@ -43,5 +43,20 @@ public class PostsService {
             return "Отсутствуют";
         }
         return tagsString.toString();
+    }
+
+    public List<Post> findByTag(String tagValue) {
+        var tags = tagsRepository.findAllByTag(tagValue);
+        var result = new ArrayList<Post>();
+        tags.forEach(tag -> {
+            result.add(postsRepository.findById(tag.getPost().getId()).orElse(null));
+        });
+        result.forEach(this::enrichPost);
+        return result;
+    }
+    private void enrichPost(Post post) {
+        if (post == null) return;
+        post.setLikesCount(likesRepository.countLikesByPost(post));
+        post.setTagsString(createTagsString(post));
     }
 }
