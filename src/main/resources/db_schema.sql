@@ -6,8 +6,13 @@ create table if not exists post (
     content clob
 );
 create table if not exists comment (
-    comment_id bigint auto_increment,
+    comment_id bigint auto_increment PRIMARY KEY,
     content varchar(1024),
+    post_id bigint,
+    foreign key (post_id) references post(post_id)
+);
+create table if not exists likes (
+    like_id bigint auto_increment PRIMARY KEY,
     post_id bigint,
     foreign key (post_id) references post(post_id)
 );
@@ -35,4 +40,9 @@ insert into post (title, picture_base_64, content) values (
 
     Организаторы выразили надежду, что такие мероприятия помогут молодым людям общаться и строить дружеские отношения вне зависимости от культурных различий. В заключение, фестиваль завершился красочным концертом, который собрал горячие аплодисменты и положительные эмоции у всех гостей.'
 );
-
+insert into comment (content, post_id) values ('Очень круто', 1);
+insert into comment (content, post_id) values ('Так держать', 1);
+insert into comment (content, post_id) values ('Кайф', 2);
+insert into likes (post_id) values (1);
+insert into likes (post_id) values (1);
+insert into likes (post_id) values (2);

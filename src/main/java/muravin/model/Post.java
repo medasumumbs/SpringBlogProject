@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,8 +32,11 @@ public class Post {
     @Column(name = "picture_base_64")
     private String pictureBase64;
 
-    @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    private List<Comment> comments = new ArrayList<>();
+
+    /*@OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    private List<Comment> likes = new ArrayList<>();*/
 
     private static Integer PREVIEW_LINES_COUNT = 3;
 
@@ -43,5 +48,13 @@ public class Post {
                 .forEach(line -> sb.append(line).append("\n"));
         sb.append("...");
         return sb.toString();
+    }
+
+    public Integer getCommentsCount() {
+        return comments.size();
+    }
+    public Integer getLikesCount() {
+        //return likes.size();
+        return null;
     }
 }

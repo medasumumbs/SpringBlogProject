@@ -14,6 +14,11 @@
     <br/>
     <a>TODO - ССЫЛКА НА СТРАНИЦУ ПОСТА</a>
     <br/>
+    <div class="post shadow">
+        <span  th:text="'Количество комментариев:' + ${post.getCommentsCount()}" ></span>
+        <span  th:text="'Количество лайков:' + ${post.getLikesCount()}" ></span>
+    </div>
+    <br/>
 </div>
 </body>
 </html>

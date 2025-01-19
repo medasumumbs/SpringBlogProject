@@ -7,19 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "likes")
 @AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
-public class Comment {
+public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
+    @Column(name = "like_id")
     private Long id;
-
-    @Column(name = "content")
-    private String text;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id",referencedColumnName = "post_id")
