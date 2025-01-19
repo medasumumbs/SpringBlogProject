@@ -38,6 +38,9 @@ public class Post {
     @Transient
     private Integer likesCount;
 
+    @Transient
+    private String tagsString;
+
     private static Integer PREVIEW_LINES_COUNT = 3;
 
     /// Возвращает первые PREVIEW_LINES_COUNT строк содержимого поста (превью)
@@ -52,11 +55,5 @@ public class Post {
 
     public Integer getCommentsCount() {
         return comments.size();
-    }
-    public Integer getLikesCount() {
-        return likesCount;
-    }
-    public void setLikesCount(Integer likesCount) {
-        this.likesCount = likesCount;
     }
 }

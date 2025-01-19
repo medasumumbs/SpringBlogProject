@@ -1,0 +1,27 @@
+package muravin.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "tag")
+@AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+public class Tag {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tag_id")
+    private Long id;
+
+    @Column(name = "tag_value")
+    private String tag;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id",referencedColumnName = "post_id")
+    private Post post;
+}

@@ -16,6 +16,13 @@ create table if not exists likes (
     post_id bigint,
     foreign key (post_id) references post(post_id)
 );
+create table if not exists tag (
+     tag_id bigint auto_increment PRIMARY KEY,
+     tag_value varchar(128),
+     post_id bigint,
+     foreign key (post_id) references post(post_id)
+);
+CREATE INDEX tag_value_index ON tag(tag_value);
 
 insert into post(title, picture_base_64, content) values (
     'Городские парки наполняются цветами благодаря усилиям волонтеров',
@@ -46,3 +53,6 @@ insert into comment (content, post_id) values ('Кайф', 2);
 insert into likes (post_id) values (1);
 insert into likes (post_id) values (1);
 insert into likes (post_id) values (2);
+insert into tag (post_id, tag_value) values (1, 'Цветы');
+insert into tag (post_id, tag_value) values (1, 'Красота');
+insert into tag (post_id, tag_value) values (2, 'Книги');

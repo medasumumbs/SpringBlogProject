@@ -7,3 +7,6 @@
     -moz-box-shadow: 4px 4px 57px 0px rgba(34, 60, 80, 0.25);
     box-shadow: 4px 4px 57px 0px rgba(34, 60, 80, 0.25);
 }
+.horizontal_block {
+    display:inline-flex;
+}
