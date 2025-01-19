@@ -35,8 +35,8 @@ public class Post {
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
-    /*@OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
-    private List<Comment> likes = new ArrayList<>();*/
+    @Transient
+    private Integer likesCount;
 
     private static Integer PREVIEW_LINES_COUNT = 3;
 
@@ -54,7 +54,9 @@ public class Post {
         return comments.size();
     }
     public Integer getLikesCount() {
-        //return likes.size();
-        return null;
+        return likesCount;
+    }
+    public void setLikesCount(Integer likesCount) {
+        this.likesCount = likesCount;
     }
 }
