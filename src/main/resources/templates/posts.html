@@ -6,12 +6,28 @@
     <link rel="stylesheet" th:href="@{/css/posts.css}"/>
 </head>
 <body>
-<div class="shadow post">
+<div class="shadow post horizontal_block">
     <form>
+        <label for="pageSize">Количество постов на одной странице:</label>
+        <select  id="pageSize" name="pageSize">
+            <option th:selected="${pageSize==1}" id="1" th:value="1">1</option>
+            <option th:selected="${pageSize==10}" id="10" th:value="10">10</option>
+            <option th:selected="${pageSize==20}" id="20" th:value="20">20</option>
+            <option th:selected="${pageSize==50}" id="50" th:value="50">50</option>
+        </select>
         <label for="tagInput" >Введите необходимый тэг:</label>
         <input name="tag" id="tagInput" type="text" th:value="${tag}"/>
-        <input value="Искать по тэгу" type="submit" th:method="GET" th:action="@{/posts}"/>
+        <input value="Поиск" type="submit" th:method="GET" th:action="@{/posts}"/>
     </form>
+</div>
+<div class="post shadow horizontal_block">
+    Выбор страницы:
+</div>
+<div th:if="${postsPage.totalPages > 0}" class="post shadow horizontal_block"
+     th:each="pageNumber : ${pageNumbers}">
+    <a class="shadow post" th:href="@{/posts(pageSize=${postsPage.size}, page=${pageNumber})}"
+       th:text="${pageNumber}"
+       th:class="${pageNumber==postsPage.number + 1} ? active"></a>
 </div>
 <div class="shadow post" th:each="post : ${posts}">
     <h2 th:text="${post.getTitle()}"></h2>
