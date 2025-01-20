@@ -1,6 +1,7 @@
 package muravin.services;
 
 import muravin.model.Post;
+import muravin.model.Tag;
 import muravin.repositories.LikesRepository;
 import muravin.repositories.PostsRepository;
 import muravin.repositories.TagsRepository;
@@ -10,8 +11,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -71,4 +74,16 @@ public class PostsService {
 
         return new PageImpl<T>(subList, pageable, entities.size());
     };
+    @Transactional(readOnly = false)
+    public void save(Post post) {
+        postsRepository.save(post);
+        if (!StringUtils.isEmpty(post.getTagsString())) {
+            Arrays.stream(post.getTagsString().split(",")).forEach(
+                    tagValue -> {
+                        Tag tag = new Tag(tagValue, post);
+                        tagsRepository.save(tag);
+                    }
+            );
+        }
+    }
 }

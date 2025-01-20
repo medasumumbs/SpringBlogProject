@@ -45,8 +45,12 @@ public class Post {
 
     /// Возвращает первые PREVIEW_LINES_COUNT строк содержимого поста (превью)
     public String getPreviewText() {
+        var lines = content.split("\n");
+        if (lines.length < PREVIEW_LINES_COUNT) {
+            return content;
+        }
         StringBuilder sb = new StringBuilder();
-        Arrays.stream(content.split("\n"))
+        Arrays.stream(lines)
                 .limit(PREVIEW_LINES_COUNT)
                 .forEach(line -> sb.append(line).append("\n"));
         sb.append("...");

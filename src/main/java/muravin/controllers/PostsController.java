@@ -8,10 +8,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -24,6 +25,24 @@ public class PostsController {
     @Autowired
     public PostsController(PostsService postsService) {
         this.postsService = postsService;
+    }
+
+    @GetMapping("/add")
+    public String addPost(@ModelAttribute("post") Post post) {
+        return "posts/add";
+    }
+
+    @PostMapping
+    public String addPost(@ModelAttribute("post") Post post, @RequestParam("image") MultipartFile file, Model model) {
+        try {
+            post.setPictureBase64(
+                    new String(Base64.getEncoder().encode(file.getBytes()))
+            );
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        postsService.save(post);
+        return "redirect:/posts";
     }
 
     @GetMapping

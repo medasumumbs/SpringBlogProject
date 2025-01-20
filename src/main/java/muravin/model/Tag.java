@@ -24,4 +24,9 @@ public class Tag {
     @ManyToOne
     @JoinColumn(name = "post_id",referencedColumnName = "post_id")
     private Post post;
+
+    public Tag(String tag, Post post) {
+        this.tag = tag;
+        this.post = post;
+    }
 }
