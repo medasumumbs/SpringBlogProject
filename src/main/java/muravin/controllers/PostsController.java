@@ -24,6 +24,7 @@ public class PostsController {
             model.addAttribute("posts", postsService.findAll());
         } else {
             model.addAttribute("posts", postsService.findByTag(tag));
+            model.addAttribute("tag", tag);
         }
         return "posts";
     }

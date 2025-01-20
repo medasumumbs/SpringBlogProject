@@ -6,6 +6,13 @@
     <link rel="stylesheet" th:href="@{/css/posts.css}"/>
 </head>
 <body>
+<div class="shadow post">
+    <form>
+        <label for="tagInput" >Введите необходимый тэг:</label>
+        <input name="tag" id="tagInput" type="text" th:value="${tag}"/>
+        <input value="Искать по тэгу" type="submit" th:method="GET" th:action="@{/posts}"/>
+    </form>
+</div>
 <div class="shadow post" th:each="post : ${posts}">
     <h2 th:text="${post.getTitle()}"></h2>
     <span th:text="${post.getPreviewText()}"></span>
