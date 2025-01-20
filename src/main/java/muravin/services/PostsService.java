@@ -68,7 +68,6 @@ public class PostsService {
     private <T> Page<T> listToPage(Pageable pageable, List<T> entities) {
         int lowerBound = pageable.getPageNumber() * pageable.getPageSize();
         int upperBound = Math.min(lowerBound + pageable.getPageSize(), entities.size());
-        //if (upperBound - lowerBound < pageable.getPageSize()) upperBound = upperBound + pageable.getPageSize();
         if (lowerBound == upperBound) upperBound = lowerBound + pageable.getPageSize();
         List<T> subList = entities.subList(lowerBound, upperBound);
 

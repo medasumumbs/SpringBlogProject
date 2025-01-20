@@ -27,6 +27,11 @@ public class PostsController {
         this.postsService = postsService;
     }
 
+    @GetMapping("/{id}")
+    public String show(@PathVariable("id") int id, Model model, @ModelAttribute("post") Post post) {
+        return "posts/show";
+    }
+
     @GetMapping("/add")
     public String addPost(@ModelAttribute("post") Post post) {
         return "posts/add";

@@ -34,12 +34,10 @@
        th:class="${pageNumber==postsPage.number + 1} ? active"></a>
 </div>
 <div class="shadow post" th:each="post : ${posts}">
-    <h2 th:text="${post.getTitle()}"></h2>
+    <h2><a th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}"></a></h2>
     <span th:text="${post.getPreviewText()}"></span>
     <br/>
     <img height="300" width="300" th:src="'data:image/png;base64, '+${post.getPictureBase64()}"></img>
-    <br/>
-    <a>TODO - ССЫЛКА НА СТРАНИЦУ ПОСТА</a>
     <br/>
     <div class="post shadow horizontal_block">
         <span  th:text="'Количество комментариев:' + ${post.getCommentsCount()}" ></span>
