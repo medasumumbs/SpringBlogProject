@@ -6,6 +6,7 @@ import muravin.repositories.PostsRepository;
 import muravin.repositories.TagsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,18 +48,27 @@ public class PostsService {
         return tagsString.toString();
     }
 
-    public List<Post> findByTag(String tagValue) {
+    public Page<Post> findByTag(String tagValue, Pageable pageable) {
         var tags = tagsRepository.findAllByTag(tagValue);
         var result = new ArrayList<Post>();
         tags.forEach(tag -> {
             result.add(postsRepository.findById(tag.getPost().getId()).orElse(null));
         });
         result.forEach(this::enrichPost);
-        return result;
+        return listToPage(pageable, result);
     }
     private void enrichPost(Post post) {
         if (post == null) return;
         post.setLikesCount(likesRepository.countLikesByPost(post));
         post.setTagsString(createTagsString(post));
     }
+    private <T> Page<T> listToPage(Pageable pageable, List<T> entities) {
+        int lowerBound = pageable.getPageNumber() * pageable.getPageSize();
+        int upperBound = Math.min(lowerBound + pageable.getPageSize(), entities.size());
+        //if (upperBound - lowerBound < pageable.getPageSize()) upperBound = upperBound + pageable.getPageSize();
+        if (lowerBound == upperBound) upperBound = lowerBound + pageable.getPageSize();
+        List<T> subList = entities.subList(lowerBound, upperBound);
+
+        return new PageImpl<T>(subList, pageable, entities.size());
+    };
 }

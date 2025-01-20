@@ -31,26 +31,33 @@ public class PostsController {
             Model model,
             @RequestParam(name = "tag", required = false) String tag,
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "30") Integer pageSize) {
+            @RequestParam(name = "pageSize", required = false, defaultValue = "1") Integer pageSize) {
         model.addAttribute("pageSize", pageSize);
+        model.addAttribute("page", page);
+        if (model.getAttribute("tag") == null) model.addAttribute("tag", "");
+        Pageable pageable = PageRequest.of(page-1, pageSize);
+        Page<Post> pageObject;
         if (tag == null || tag.isEmpty()) {
-            Pageable pageable = PageRequest.of(page-1, pageSize);
-            Page<Post> pageObject = postsService.findAll(pageable);
-            model.addAttribute("postsPage", pageObject);
-            model.addAttribute("posts", pageObject.stream().toList());
-            int pagesCount = pageObject.getTotalPages();
-            if (pagesCount > 0) {
-                model.addAttribute(
-                        "pageNumbers",
-                        IntStream.rangeClosed(1, pagesCount)
-                        .boxed()
-                        .collect(Collectors.toList())
-                );
-            }
+            pageObject = postsService.findAll(pageable);
         } else {
-            model.addAttribute("posts", postsService.findByTag(tag));
+            /// TODO исправить возможность indexOutOfBoundsException!
+            if (!tag.equals(model.getAttribute("tag"))) {
+                model.addAttribute("page", 1);
+            }
+            pageObject = postsService.findByTag(tag,pageable);
             model.addAttribute("tag", tag);
         }
+        int pagesCount = pageObject.getTotalPages();
+        if (pagesCount > 0) {
+            model.addAttribute(
+                    "pageNumbers",
+                    IntStream.rangeClosed(1, pagesCount)
+                            .boxed()
+                            .collect(Collectors.toList())
+            );
+        }
+        model.addAttribute("posts", pageObject.stream().toList());
+        model.addAttribute("postsPage", pageObject);
         return "posts";
     }
 }

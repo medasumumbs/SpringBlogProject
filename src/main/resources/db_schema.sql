@@ -56,3 +56,4 @@ insert into likes (post_id) values (2);
 insert into tag (post_id, tag_value) values (1, 'Цветы');
 insert into tag (post_id, tag_value) values (1, 'Красота');
 insert into tag (post_id, tag_value) values (2, 'Книги');
+insert into tag (post_id, tag_value) values (2, 'Красота');

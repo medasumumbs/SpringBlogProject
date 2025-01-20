@@ -17,6 +17,7 @@
         </select>
         <label for="tagInput" >Введите необходимый тэг:</label>
         <input name="tag" id="tagInput" type="text" th:value="${tag}"/>
+        <input name="page" type="hidden" th:value="${postsPage.number + 1}">
         <input value="Поиск" type="submit" th:method="GET" th:action="@{/posts}"/>
     </form>
 </div>
@@ -25,7 +26,7 @@
 </div>
 <div th:if="${postsPage.totalPages > 0}" class="post shadow horizontal_block"
      th:each="pageNumber : ${pageNumbers}">
-    <a class="shadow post" th:href="@{/posts(pageSize=${postsPage.size}, page=${pageNumber})}"
+    <a class="shadow post" th:href="@{/posts(pageSize=${postsPage.size}, page=${pageNumber}, tag=${tag})}"
        th:text="${pageNumber}"
        th:class="${pageNumber==postsPage.number + 1} ? active"></a>
 </div>
