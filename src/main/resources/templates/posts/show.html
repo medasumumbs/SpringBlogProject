@@ -25,6 +25,13 @@
 </div>
 <div class="shadow post">
     Комментарии:
+    <div class="post shadow">
+        <form th:method="POST" th:action="@{/comments}">
+            <input name="post" type="hidden" th:value="${post.getId()}">
+            <textarea name="text"></textarea>
+            <button type="submit" >Добавить комментарий</button>
+        </form>
+    </div>
     <div th:each="comment: ${post.getComments()}" class="shadow post" >
         <span th:text="${comment.getText()}"></span>
     </div>

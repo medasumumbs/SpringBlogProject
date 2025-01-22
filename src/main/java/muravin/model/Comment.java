@@ -24,4 +24,9 @@ public class Comment {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id",referencedColumnName = "post_id")
     private Post post;
+
+    public Comment(Post post, String text) {
+        this.post = post;
+        this.text = text;
+    }
 }
