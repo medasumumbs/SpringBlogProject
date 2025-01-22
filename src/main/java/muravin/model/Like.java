@@ -21,4 +21,8 @@ public class Like {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id",referencedColumnName = "post_id")
     private Post post;
+
+    public Like(Post post) {
+        this.post = post;
+    }
 }

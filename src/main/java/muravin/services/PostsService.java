@@ -23,7 +23,7 @@ import java.util.Optional;
 public class PostsService {
     private final LikesRepository likesRepository;
     private final TagsRepository tagsRepository;
-    private PostsRepository postsRepository;
+    private final PostsRepository postsRepository;
 
     @Autowired
     public PostsService(PostsRepository postsRepository, LikesRepository likesRepository, TagsRepository tagsRepository) {
@@ -34,9 +34,7 @@ public class PostsService {
 
     public Optional<Post> findOne(Long id) {
         var result = postsRepository.findById(id);
-        if (result.isPresent()) {
-            enrichPost(result.get());
-        }
+        result.ifPresent(this::enrichPost);
         return result;
     }
     public Page<Post> findAll(Pageable pageable) {
