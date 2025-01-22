@@ -23,5 +23,11 @@
     </div>
     <br/>
 </div>
+<div class="shadow post">
+    Комментарии:
+    <div th:each="comment: ${post.getComments()}" class="shadow post" >
+        <span th:text="${comment.getText()}"></span>
+    </div>
+</div>
 </body>
 </html>
