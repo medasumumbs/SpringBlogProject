@@ -43,6 +43,7 @@ public class Post {
 
     private static Integer PREVIEW_LINES_COUNT = 3;
 
+    private static Integer MAX_PREVIEW_SYMBOLS_COUNT = 400;
     /// Возвращает первые PREVIEW_LINES_COUNT строк содержимого поста (превью)
     public String getPreviewText() {
         var lines = content.split("\n");
@@ -53,6 +54,9 @@ public class Post {
         Arrays.stream(lines)
                 .limit(PREVIEW_LINES_COUNT)
                 .forEach(line -> sb.append(line).append("\n"));
+        if (sb.length() > MAX_PREVIEW_SYMBOLS_COUNT) {
+            return content.substring(0, MAX_PREVIEW_SYMBOLS_COUNT)+"...";
+        }
         sb.append("...");
         return sb.toString();
     }

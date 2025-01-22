@@ -16,6 +16,7 @@ import org.thymeleaf.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,6 +32,13 @@ public class PostsService {
         this.tagsRepository = tagsRepository;
     }
 
+    public Optional<Post> findOne(Long id) {
+        var result = postsRepository.findById(id);
+        if (result.isPresent()) {
+            enrichPost(result.get());
+        }
+        return result;
+    }
     public Page<Post> findAll(Pageable pageable) {
         var result = postsRepository.findAll(pageable);
         result.forEach(this::enrichPost);

@@ -28,7 +28,8 @@ public class PostsController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model, @ModelAttribute("post") Post post) {
+    public String show(@PathVariable("id") Long id, Model model, @ModelAttribute("post") Post post) {
+        model.addAttribute("post",postsService.findOne(id).orElse(null));
         return "posts/show";
     }
 
