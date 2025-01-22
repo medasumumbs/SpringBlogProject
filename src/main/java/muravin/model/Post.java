@@ -32,7 +32,7 @@ public class Post {
     @Column(name = "picture_base_64")
     private String pictureBase64;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
     @Transient

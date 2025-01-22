@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/likes")
 public class LikesController {
-
-
     private final LikesService likesService;
 
     public LikesController(LikesService likesService) {
@@ -27,6 +25,6 @@ public class LikesController {
     @PostMapping
     public String addLike(@RequestParam(name = "post") Long postId) {
         likesService.addLike(postId);
-        return "redirect:/posts/"+postId;
+        return "redirect:/posts/" + postId;
     }
 }

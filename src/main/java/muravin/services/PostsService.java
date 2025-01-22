@@ -91,4 +91,8 @@ public class PostsService {
             );
         }
     }
+    @Transactional(readOnly = false)
+    public void deletePost(Long postId) {
+        postsRepository.deleteById(postId);
+    }
 }

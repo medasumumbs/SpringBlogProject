@@ -38,6 +38,12 @@ public class PostsController {
         return "posts/add";
     }
 
+    @DeleteMapping("/{id}")
+    public String deletePost(@PathVariable("id") Long postId) {
+        postsService.deletePost(postId);
+        return "redirect:/posts";
+    }
+
     @PostMapping
     public String addPost(@ModelAttribute("post") Post post, @RequestParam("image") MultipartFile file, Model model) {
         try {
