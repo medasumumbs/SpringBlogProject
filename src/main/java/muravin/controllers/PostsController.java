@@ -54,9 +54,14 @@ public class PostsController {
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("post") Post post,
                          @PathVariable("id") int id,
-                         @RequestParam("image") MultipartFile file) {
-        setPirctureBase64IfPossible(post, file);
-        postsService.updatePost(post);
+                         @RequestParam("image") MultipartFile file,
+                         @RequestParam(value = "deleteImg", defaultValue = "0") Boolean deleteImage) {
+        if ((!file.isEmpty())) {
+            setPirctureBase64IfPossible(post, file);
+        } else if (deleteImage) {
+            post.setPictureBase64(null);
+        }
+        postsService.updatePost(post, deleteImage);
         return "redirect:/posts";
     }
 

@@ -101,13 +101,14 @@ public class PostsService {
         postsRepository.deleteById(postId);
     }
     @Transactional(readOnly = false)
-    public void updatePost(Post post) {
+    public void updatePost(Post post, Boolean deleteImage) {
         Post postToBeUpdated = postsRepository.findById(post.getId()).get();
         post.setId(postToBeUpdated.getId());
+        if ((!deleteImage) && (post.getPictureBase64() == null)) {
+            post.setPictureBase64(postToBeUpdated.getPictureBase64());
+        }
         tagsRepository.deleteAllByPost(postToBeUpdated);
         postsRepository.save(post);
-        //post.getTagsString().
-
         saveTags(post);
     }
 }
