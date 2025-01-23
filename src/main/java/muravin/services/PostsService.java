@@ -83,16 +83,31 @@ public class PostsService {
     public void save(Post post) {
         postsRepository.save(post);
         if (!StringUtils.isEmpty(post.getTagsString())) {
-            Arrays.stream(post.getTagsString().split(",")).forEach(
-                    tagValue -> {
-                        Tag tag = new Tag(tagValue, post);
-                        tagsRepository.save(tag);
-                    }
-            );
+            saveTags(post);
         }
     }
+
+    private void saveTags(Post post) {
+        Arrays.stream(post.getTagsString().split(",")).forEach(
+                tagValue -> {
+                    Tag tag = new Tag(tagValue, post);
+                    tagsRepository.save(tag);
+                }
+        );
+    }
+
     @Transactional(readOnly = false)
     public void deletePost(Long postId) {
         postsRepository.deleteById(postId);
+    }
+    @Transactional(readOnly = false)
+    public void updatePost(Post post) {
+        Post postToBeUpdated = postsRepository.findById(post.getId()).get();
+        post.setId(postToBeUpdated.getId());
+        tagsRepository.deleteAllByPost(postToBeUpdated);
+        postsRepository.save(post);
+        //post.getTagsString().
+
+        saveTags(post);
     }
 }

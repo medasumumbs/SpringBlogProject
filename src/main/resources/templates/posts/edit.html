@@ -6,7 +6,7 @@
   <link rel="stylesheet" th:href="@{/css/posts.css}"/>
 </head>
 <body>
-<form enctype="multipart/form-data" th:method="POST" th:action="@{/posts}" th:object="${post}" class="shadow post" >
+<form enctype="multipart/form-data" th:method="PATCH" th:action="@{/posts/{id}(id=${post.getId()})}" th:object="${post}" class="shadow post" >
   <div class="post shadow">
     <label for="title">Заголовок поста: </label>
     <input id="title" th:field="*{title}" name="title">
@@ -27,7 +27,7 @@
     <input id="tagsString" name="tagsString" th:field="*{tagsString}">
     <br/>
   </div>
-  <input type="submit" value="Добавить">
+  <input type="submit" value="Редактировать">
 </form>
 </body>
 </html>

@@ -49,6 +49,9 @@
         <span  th:text="'Тэги: ' + ${post.getTagsString()}" ></span>
     </div>
     <br/>
+    <div class="post shadow horizontal_block">
+        <a th:href="@{/posts/{id}/edit(id=${post.getId()})}">Редактировать</a>
+    </div>
 </div>
 </body>
 </html>

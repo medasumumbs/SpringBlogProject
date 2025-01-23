@@ -46,6 +46,21 @@ public class PostsController {
 
     @PostMapping
     public String addPost(@ModelAttribute("post") Post post, @RequestParam("image") MultipartFile file, Model model) {
+        setPirctureBase64IfPossible(post, file);
+        postsService.save(post);
+        return "redirect:/posts";
+    }
+
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute("post") Post post,
+                         @PathVariable("id") int id,
+                         @RequestParam("image") MultipartFile file) {
+        setPirctureBase64IfPossible(post, file);
+        postsService.updatePost(post);
+        return "redirect:/posts";
+    }
+
+    private static void setPirctureBase64IfPossible(Post post, MultipartFile file) {
         try {
             post.setPictureBase64(
                     new String(Base64.getEncoder().encode(file.getBytes()))
@@ -53,8 +68,6 @@ public class PostsController {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        postsService.save(post);
-        return "redirect:/posts";
     }
 
     @GetMapping
@@ -91,4 +104,11 @@ public class PostsController {
         model.addAttribute("postsPage", pageObject);
         return "posts";
     }
+    @GetMapping("/{id}/edit")
+    public String editPost(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("post", postsService.findOne(id).get());
+        return "posts/edit";
+    }
+
+
 }
