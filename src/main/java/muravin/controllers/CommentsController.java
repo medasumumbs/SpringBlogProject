@@ -8,10 +8,7 @@ import muravin.services.CommentsService;
 import muravin.services.PostsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
@@ -32,6 +29,13 @@ public class CommentsController {
         commentsService.save(
                 new Comment(postsService.findOne(postId).orElse(null),text)
         );
+        return "redirect:/posts/"+postId;
+    }
+    @PatchMapping("/{id}")
+    public String editComment(@PathVariable("id") Long id, @RequestParam(name = "post") Long postId, @RequestParam(name = "text") String text) {
+        Comment originalComment = commentsService.findCommentById(id).orElseThrow(RuntimeException::new);
+        originalComment.setText(text);
+        commentsService.save(originalComment);
         return "redirect:/posts/"+postId;
     }
 }

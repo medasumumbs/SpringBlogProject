@@ -5,6 +5,8 @@ import muravin.repositories.CommentsRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class CommentsService {
@@ -17,5 +19,9 @@ public class CommentsService {
     @Transactional(readOnly = false)
     public void save(Comment comment) {
         commentsRepository.save(comment);
+    }
+
+    public Optional<Comment> findCommentById(Long id) {
+        return commentsRepository.findById(id);
     }
 }

@@ -4,6 +4,29 @@
     <meta charset="UTF-8">
     <title>Содержимое поста</title>
     <link rel="stylesheet" th:href="@{/css/posts.css}"/>
+    <script language="JavaScript">
+        function switchVisibility(commentId, commentsCollectionSize) {
+            ///Открыть комментарий на редактирование
+            if (document.getElementById('comment'+commentId).style === "display:none") {
+                switchCommentEditingOff(commentId);
+            } else {
+                switchCommentEditingOn(commentId);
+            }
+            ///Заблокировать остальные окна редактирования комментариев
+            for (let i = 0; i <= commentsCollectionSize; i++){
+                if (i === commentId) continue;
+                switchCommentEditingOff(i);
+            }
+        }
+        function switchCommentEditingOff(commentId) {
+            document.getElementById('comment' + commentId).style = "display:block"
+            document.getElementById('commentForm' + commentId).style = "display:none"
+        }
+        function switchCommentEditingOn(commentId) {
+            document.getElementById('comment' + commentId).style = "display:none"
+            document.getElementById('commentForm' + commentId).style = "display:block"
+        }
+    </script>
 </head>
 <body>
 <div class="shadow post">
@@ -45,7 +68,16 @@
         </form>
     </div>
     <div th:each="comment: ${post.getComments()}" class="shadow post" >
-        <span th:text="${comment.getText()}"></span>
+        <span th:id="'comment'+${comment.getId()}"
+              th:onclick="switchVisibility([[ ${comment.getId()} ]],[[${post.getComments().size()}]])"
+              th:text="${comment.getText()}"></span>
+        <form th:id="'commentForm'+${comment.getId()}" style="display:none"
+              th:method="PATCH"
+              th:action="@{/comments/{id}(id=${comment.getId()})}">
+            <textarea th:text="${comment.getText()}" name="text"></textarea>
+            <input type="hidden" name="post" th:value="${comment.getPost().getId()}"/>
+            <input type="submit" value="Отредактировать комментарий">
+        </form>
     </div>
 </div>
 </body>
