@@ -13,7 +13,7 @@
                 switchCommentEditingOn(commentId);
             }
             ///Заблокировать остальные окна редактирования комментариев
-            for (let i = 0; i <= commentsCollectionSize; i++){
+            for (let i = 1; i <= commentsCollectionSize; i++){
                 if (i === commentId) continue;
                 switchCommentEditingOff(i);
             }
@@ -25,6 +25,12 @@
         function switchCommentEditingOn(commentId) {
             document.getElementById('comment' + commentId).style = "display:none"
             document.getElementById('commentForm' + commentId).style = "display:block"
+            window.onkeyup = null;
+            window.addEventListener("keyup" ,function (e) {
+                if ((e.key === 'Enter') && (e.ctrlKey)) {
+                    document.getElementById('commentForm' + commentId).submit();
+                }
+            })
         }
         // По нажатию Escape редактирование выключается
         function addEscapeListener() {

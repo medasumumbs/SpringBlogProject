@@ -89,9 +89,10 @@ public class PostsController {
         if (tag == null || tag.isEmpty()) {
             pageObject = postsService.findAll(pageable);
         } else {
-            /// TODO исправить возможность indexOutOfBoundsException!
             if (!tag.equals(model.getAttribute("tag"))) {
+                /// При изменении тэга сбрасываем текущую страницу на первую
                 model.addAttribute("page", 1);
+                pageable = PageRequest.of(0,pageSize);
             }
             pageObject = postsService.findByTag(tag,pageable);
             model.addAttribute("tag", tag);
