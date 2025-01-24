@@ -26,9 +26,21 @@
             document.getElementById('comment' + commentId).style = "display:none"
             document.getElementById('commentForm' + commentId).style = "display:block"
         }
+        // По нажатию Escape редактирование выключается
+        function addEscapeListener() {
+            window.addEventListener("keydown" ,function (e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll(".commentEditForm").forEach(
+                        (item) => {
+                            switchCommentEditingOff(item.getAttribute("id").split("commentForm")[1])
+                        }
+                    )
+                }
+            })
+        }
     </script>
 </head>
-<body>
+<body onload="addEscapeListener()">
 <div class="shadow post">
     <h2 th:text="${post.getTitle()}"></h2>
     <span th:text="${post.getContent()}"></span>
@@ -71,7 +83,7 @@
         <span th:id="'comment'+${comment.getId()}"
               th:onclick="switchVisibility([[ ${comment.getId()} ]],[[${post.getComments().size()}]])"
               th:text="${comment.getText()}"></span>
-        <form th:id="'commentForm'+${comment.getId()}" style="display:none"
+        <form class="commentEditForm" th:id="'commentForm'+${comment.getId()}" style="display:none"
               th:method="PATCH"
               th:action="@{/comments/{id}(id=${comment.getId()})}">
             <textarea th:text="${comment.getText()}" name="text"></textarea>
