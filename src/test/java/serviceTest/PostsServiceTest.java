@@ -3,7 +3,6 @@ package serviceTest;
 import muravin.model.Comment;
 import muravin.model.Post;
 import muravin.model.Tag;
-import muravin.repositories.CommentsRepository;
 import muravin.repositories.LikesRepository;
 import muravin.repositories.PostsRepository;
 import muravin.repositories.TagsRepository;
@@ -18,9 +17,6 @@ import static org.mockito.Mockito.*;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = PostsServiceTest.TestConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 public class PostsServiceTest {
     @Autowired
     private PostsService postsService;
@@ -202,7 +198,7 @@ public class PostsServiceTest {
         return new Tag(i, "tag" + i, getMockPost(i));
     }
 
-    private static Post getMockPost(Long i) {
+    public static Post getMockPost(Long i) {
         Post mockPost = new Post(
                 i,
                 "Новый пост",
@@ -216,27 +212,4 @@ public class PostsServiceTest {
     }
 
 
-    @Configuration
-    public static class TestConfig {
-
-        @Bean
-        public PostsService userService(PostsRepository postsRepository, LikesRepository likesRepository, TagsRepository tagsRepository) {
-            return new PostsService(postsRepository, likesRepository, tagsRepository);
-        }
-
-        @Bean
-        public PostsRepository postsRepository() {
-            return mock(PostsRepository.class);
-        }
-
-        @Bean
-        public LikesRepository likesRepository() {
-            return mock(LikesRepository.class);
-        }
-
-        @Bean
-        public TagsRepository tagsRepository() {
-            return mock(TagsRepository.class);
-        }
-    }
 }
