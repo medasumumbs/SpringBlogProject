@@ -7,7 +7,6 @@ import muravin.repositories.PostsRepository;
 import muravin.repositories.TagsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +14,9 @@ import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
+
+import static muravin.utils.PageableUtils.listToPage;
 
 @Service
 @Transactional
@@ -42,7 +42,7 @@ public class PostsService {
         result.forEach(this::enrichPost);
         return result;
     }
-    private String createTagsString(Post post) {
+    public String createTagsString(Post post) {
         var tagsList = tagsRepository.findAllByPost(post);
         StringBuilder tagsString = new StringBuilder();
         tagsList.forEach(tag -> {
@@ -66,22 +66,12 @@ public class PostsService {
         result.forEach(this::enrichPost);
         return listToPage(pageable, result);
     }
-    private void enrichPost(Post post) {
+    public void enrichPost(Post post) {
         if (post == null) return;
         post.setLikesCount(likesRepository.countLikesByPost(post));
         post.setTagsString(createTagsString(post));
     }
-    private <T> Page<T> listToPage(Pageable pageable, List<T> entities) {
-        int lowerBound = pageable.getPageNumber() * pageable.getPageSize();
-        int upperBound = Math.min(lowerBound + pageable.getPageSize(), entities.size());
-        if (lowerBound == upperBound) upperBound = lowerBound + pageable.getPageSize();
-        if (entities.isEmpty()) {
-            return Page.empty(pageable);
-        }
-        List<T> subList = entities.subList(lowerBound, upperBound);
 
-        return new PageImpl<T>(subList, pageable, entities.size());
-    };
     @Transactional(readOnly = false)
     public void save(Post post) {
         postsRepository.save(post);
