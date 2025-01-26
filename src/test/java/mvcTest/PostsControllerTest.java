@@ -54,7 +54,7 @@ class PostsControllerTest {
     }
 
     @Test
-    void getUsers_shouldReturnHtmlWithPosts() throws Exception {
+    void getPosts_shouldReturnHtmlWithPosts() throws Exception {
         mockMvc.perform(get("/posts?pageSize=10"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
