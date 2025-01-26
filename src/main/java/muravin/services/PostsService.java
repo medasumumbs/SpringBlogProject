@@ -81,6 +81,9 @@ public class PostsService {
     }
 
     private void saveTags(Post post) {
+        if (post.getTagsString() == null) {
+            return;
+        }
         Arrays.stream(post.getTagsString().split(",")).forEach(
                 tagValue -> {
                     Tag tag = new Tag(tagValue, post);
