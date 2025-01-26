@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>Лента</title>
     <link rel="stylesheet" th:href="@{/css/posts.css}"/>
 </head>
@@ -17,7 +17,7 @@
         </select>
         <label for="tagInput" >Введите необходимый тэг:</label>
         <input name="tag" id="tagInput" type="text" th:value="${tag}"/>
-        <input name="page" type="hidden" th:value="${postsPage.number + 1}">
+        <input name="page" type="hidden" th:value="${postsPage.number + 1}"/>
         <input value="Поиск" type="submit" th:method="GET" th:action="@{/posts}"/>
     </form>
 </div>
