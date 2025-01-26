@@ -3,6 +3,7 @@ package mvcTest;
 import muravin.configurations.DataSourceConfiguration;
 import muravin.configurations.WebConfiguration;
 import muravin.model.Post;
+import muravin.repositories.CommentsRepository;
 import muravin.repositories.PostsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,13 +38,17 @@ class PostsControllerTest {
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
+    @Autowired
+    private CommentsRepository commentsRepository;
 
     @BeforeEach
     @Transactional(readOnly = false)
     void setUp() {
+        System.out.println("setUp");
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         // Очистка и заполнение тестовых данных в базе
         postsRepository.deleteAll();
+        commentsRepository.deleteAll();
         var post4 = getPost(4L);
         post4.setId(null);
         var post5 = getPost(5L);
@@ -83,33 +88,33 @@ class PostsControllerTest {
     }
 
     @Test void getWithIdShouldReturnView() throws Exception {
-        mockMvc.perform(get("/posts/{id}", 5L))
+        mockMvc.perform(get("/posts/{id}", 15L))
                 .andExpect(status().isOk())
-                .andExpect(view().name("posts/show"));
+                .andExpect(view().name("posts/show"))
+                .andExpect(model().attributeExists("post"));
     }
     @Test void deletePostShouldRedirectToIndex() throws Exception {
-        mockMvc.perform(delete("/posts/{id}", 5L))
+        mockMvc.perform(delete("/posts/{id}", 5))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"));
         assertFalse(postsRepository.existsById(5L));
     }
     @Test void addPostShouldSavePostAndRedirectToIndex() throws Exception {
-        var post = getPost(6L);
+        var post = getPost(18L);
         post.setId(null);
         mockMvc.perform(multipart("/posts")
                         .file("image",null)
                         .param("title", post.getTitle()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"));
-        assertTrue(postsRepository.existsById(6L));
+        assertTrue(postsRepository.existsById(18L));
     }
 
     @Test void updatePostShouldSavePostAndRedirectToIndex() throws Exception {
-
         MockMultipartFile file = new MockMultipartFile("data", "dummy.csv",
                 "text/plain", "123".getBytes());
         MockMultipartHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.multipart("/posts/5");
+                MockMvcRequestBuilders.multipart("/posts/20");
         builder.with(new RequestPostProcessor() {
             @Override
             public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
@@ -117,7 +122,7 @@ class PostsControllerTest {
                 return request;
             }
         });
-        var post = postsRepository.findById(5L).get();
+        var post = postsRepository.findById(20L).get();
         post.setId(null);
         var oldTitle = post.getTitle();
         mockMvc.perform(builder.file("image", file.getBytes())
@@ -128,8 +133,8 @@ class PostsControllerTest {
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"));
-        post = postsRepository.findById(5L).get();
-        assertTrue(postsRepository.existsById(5L));
+        post = postsRepository.findById(20L).get();
+        assertTrue(postsRepository.existsById(20L));
         assertEquals("MTIz", post.getPictureBase64());
         assertEquals(oldTitle+"abcde", post.getTitle());
     }
