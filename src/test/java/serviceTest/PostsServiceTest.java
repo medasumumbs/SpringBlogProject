@@ -17,6 +17,7 @@ import static org.mockito.Mockito.*;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
@@ -99,12 +100,13 @@ public class PostsServiceTest {
         var secondTag = getTag(2L);
         var firstPost = firstTag.getPost();
         var secondPost = secondTag.getPost();
-        Mockito.when(tagsRepository.findAllByTag("tag")).thenReturn(
+        Pageable pageable = PageRequest.of(1, 3);
+        Mockito.when(tagsRepository.findAllByTag(any(), any())).thenReturn(
                 List.of(firstTag, secondTag)
         );
         Mockito.when(postsRepository.findById(1L)).thenReturn(Optional.of(firstPost));
         Mockito.when(postsRepository.findById(2L)).thenReturn(Optional.of(secondPost));
-        Pageable pageable = PageRequest.of(0, 1);
+        pageable = PageRequest.of(0, 1);
 
         var result = postsService.findByTag("tag", pageable);
         assertNotNull(result);

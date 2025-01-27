@@ -2,6 +2,7 @@ package muravin.repositories;
 
 import muravin.model.Post;
 import muravin.model.Tag;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,7 @@ import java.util.List;
 @Repository
 public interface TagsRepository extends JpaRepository<Tag, Long> {
     public List<Tag> findAllByPost(Post post);
-    public List<Tag> findAllByTag(String tag);
+    public List<Tag> findAllByTag(String tag, Pageable pageable);
 
     @Transactional
     @Modifying

@@ -58,7 +58,7 @@ public class PostsService {
     }
 
     public Page<Post> findByTag(String tagValue, Pageable pageable) {
-        var tags = tagsRepository.findAllByTag(tagValue);
+        var tags = tagsRepository.findAllByTag(tagValue, pageable);
         var result = new ArrayList<Post>();
         tags.forEach(tag -> {
             result.add(postsRepository.findById(tag.getPost().getId()).orElse(null));
