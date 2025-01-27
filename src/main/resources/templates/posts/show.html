@@ -96,6 +96,12 @@
             <input type="hidden" name="post" th:value="${comment.getPost().getId()}"/>
             <input type="submit" value="Отредактировать комментарий">
         </form>
+        <div class="shadow post horizontal_block">
+            <form th:method="DELETE" th:action="@{/comments/{id}(id=${comment.getId()})}">
+                <input type="hidden" name="post" th:value="${comment.getPost().getId()}"/>
+                <input type="submit" value="Удалить комментарий"/>
+            </form>
+        </div>
     </div>
 </div>
 </body>

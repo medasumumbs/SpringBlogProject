@@ -35,12 +35,12 @@ public class CommentsControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        commentsRepository.deleteAll();
         postsRepository.deleteAll();
         var post = new Post();
         post.setTitle("Test Post");
         post.setContent("Test Content");
         postsRepository.save(post);
-        commentsRepository.deleteAll();
     }
     @Test void postShouldAddComment() throws Exception {
         var id = postsRepository.findAll().get(0).getId();

@@ -25,6 +25,10 @@ public class Comment {
     @JoinColumn(name = "post_id",referencedColumnName = "post_id")
     private Post post;
 
+    @PreRemove
+    public void removeChild() {
+        this.post.getComments().removeIf(c -> c.getId() == this.id);
+    }
     public Comment(Post post, String text) {
         this.post = post;
         this.text = text;

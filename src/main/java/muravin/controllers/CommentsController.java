@@ -38,4 +38,9 @@ public class CommentsController {
         commentsService.save(originalComment);
         return "redirect:/posts/"+postId;
     }
+    @DeleteMapping("/{id}")
+    public String deletePost(@PathVariable("id") Long commentId, @RequestParam(name = "post") Long postId) {
+        commentsService.deleteComment(commentId);
+        return "redirect:/posts/"+postId;
+    }
 }

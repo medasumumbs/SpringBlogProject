@@ -36,12 +36,12 @@ public class LikesControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        postsRepository.deleteAll();
+        likesRepository.deleteAll();
+        //postsRepository.deleteAll();
         var post = new Post();
         post.setTitle("Test Post");
         post.setContent("Test Content");
         postsRepository.save(post);
-        likesRepository.deleteAll();
     }
     @Test void postShouldAddLike() throws Exception {
         var id = postsRepository.findAll().get(0).getId();

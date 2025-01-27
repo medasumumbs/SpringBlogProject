@@ -2,6 +2,7 @@ package serviceTest;
 
 import muravin.model.Comment;
 import muravin.repositories.CommentsRepository;
+import muravin.repositories.PostsRepository;
 import muravin.services.CommentsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ public class CommentsServiceTest {
     @Autowired
     private CommentsRepository commentsRepository;
 
+    @Autowired
+    private PostsRepository postsRepository;
+
     @BeforeEach
     void setUp() {
         Mockito.reset(commentsRepository);
@@ -55,8 +59,11 @@ public class CommentsServiceTest {
 
     @Configuration
     public static class TestConfig {
-        @Bean public CommentsService commentsService(CommentsRepository commentsRepository) {
-            return new CommentsService(commentsRepository);
+        @Bean public CommentsService commentsService(CommentsRepository commentsRepository, PostsRepository postsRepository) {
+            return new CommentsService(commentsRepository, postsRepository);
+        }
+        @Bean public PostsRepository postsRepository() {
+            return Mockito.mock(PostsRepository.class);
         }
         @Bean
         public CommentsRepository commentsRepository() {

@@ -47,8 +47,8 @@ class PostsControllerTest {
         System.out.println("setUp");
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         // Очистка и заполнение тестовых данных в базе
-        postsRepository.deleteAll();
         commentsRepository.deleteAll();
+        postsRepository.deleteAll();
         var post4 = getPost(4L);
         post4.setId(null);
         var post5 = getPost(5L);
@@ -88,7 +88,7 @@ class PostsControllerTest {
     }
 
     @Test void getWithIdShouldReturnView() throws Exception {
-        mockMvc.perform(get("/posts/{id}", 15L))
+        mockMvc.perform(get("/posts/{id}", 14L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("posts/show"))
                 .andExpect(model().attributeExists("post"));
@@ -100,21 +100,22 @@ class PostsControllerTest {
         assertFalse(postsRepository.existsById(5L));
     }
     @Test void addPostShouldSavePostAndRedirectToIndex() throws Exception {
-        var post = getPost(18L);
+        var id = postsRepository.findAll().getLast().getId()+1;
+        var post = getPost(id);
         post.setId(null);
         mockMvc.perform(multipart("/posts")
                         .file("image",null)
                         .param("title", post.getTitle()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"));
-        assertTrue(postsRepository.existsById(18L));
+        assertTrue(postsRepository.existsById(id));
     }
 
     @Test void updatePostShouldSavePostAndRedirectToIndex() throws Exception {
         MockMultipartFile file = new MockMultipartFile("data", "dummy.csv",
                 "text/plain", "123".getBytes());
         MockMultipartHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.multipart("/posts/20");
+                MockMvcRequestBuilders.multipart("/posts/19");
         builder.with(new RequestPostProcessor() {
             @Override
             public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
@@ -122,7 +123,7 @@ class PostsControllerTest {
                 return request;
             }
         });
-        var post = postsRepository.findById(20L).get();
+        var post = postsRepository.findById(19L).get();
         post.setId(null);
         var oldTitle = post.getTitle();
         mockMvc.perform(builder.file("image", file.getBytes())
@@ -133,8 +134,8 @@ class PostsControllerTest {
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"));
-        post = postsRepository.findById(20L).get();
-        assertTrue(postsRepository.existsById(20L));
+        post = postsRepository.findById(19L).get();
+        assertTrue(postsRepository.existsById(19L));
         assertEquals("MTIz", post.getPictureBase64());
         assertEquals(oldTitle+"abcde", post.getTitle());
     }
