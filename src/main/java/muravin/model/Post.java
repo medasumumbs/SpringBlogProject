@@ -41,7 +41,7 @@ public class Post {
     @Transient
     private String tagsString;
 
-    private static Integer PREVIEW_LINES_COUNT = 3;
+    private static Integer PREVIEW_LINES_COUNT = 1;
 
     private static Integer MAX_PREVIEW_SYMBOLS_COUNT = 400;
     /// Возвращает первые PREVIEW_LINES_COUNT строк содержимого поста (превью)
@@ -53,7 +53,7 @@ public class Post {
         StringBuilder sb = new StringBuilder();
         Arrays.stream(lines)
                 .limit(PREVIEW_LINES_COUNT)
-                .forEach(line -> sb.append(line).append("\n"));
+                .forEach(line -> sb.append(line));
         if (sb.length() > MAX_PREVIEW_SYMBOLS_COUNT) {
             return content.substring(0, MAX_PREVIEW_SYMBOLS_COUNT)+"...";
         }

@@ -35,7 +35,7 @@
 </div>
 <div class="shadow post" th:each="post : ${posts}">
     <h2><a th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}"></a></h2>
-    <span th:text="${post.getPreviewText()}"></span>
+    <span style="white-space: pre-line" th:text="${post.getPreviewText()}"></span>
     <br/>
     <img height="300" width="300" th:src="'data:image/png;base64, '+${post.getPictureBase64()}"></img>
     <br/>
