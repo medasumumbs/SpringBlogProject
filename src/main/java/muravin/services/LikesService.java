@@ -16,7 +16,6 @@ public class LikesService {
         this.likesRepository = likesRepository;
         this.postsRepository = postsRepository;
     }
-    @Transactional(readOnly = false)
     public void addLike(Long postId) {
         likesRepository.save(new Like(postsRepository.findById(postId).orElse(null)));
     }

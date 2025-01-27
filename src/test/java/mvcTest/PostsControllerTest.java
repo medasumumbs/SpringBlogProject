@@ -42,7 +42,7 @@ class PostsControllerTest {
     private CommentsRepository commentsRepository;
 
     @BeforeEach
-    @Transactional(readOnly = false)
+    @Transactional()
     void setUp() {
         System.out.println("setUp");
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();

@@ -72,7 +72,6 @@ public class PostsService {
         post.setTagsString(createTagsString(post));
     }
 
-    @Transactional(readOnly = false)
     public void save(Post post) {
         postsRepository.save(post);
         if (!StringUtils.isEmpty(post.getTagsString())) {
@@ -92,11 +91,9 @@ public class PostsService {
         );
     }
 
-    @Transactional(readOnly = false)
     public void deletePost(Long postId) {
         postsRepository.deleteById(postId);
     }
-    @Transactional(readOnly = false)
     public void updatePost(Post post, Boolean deleteImage) {
         Post postToBeUpdated = postsRepository.findById(post.getId()).get();
         post.setId(postToBeUpdated.getId());

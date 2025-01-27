@@ -57,7 +57,9 @@ public class Post {
         if (sb.length() > MAX_PREVIEW_SYMBOLS_COUNT) {
             return content.substring(0, MAX_PREVIEW_SYMBOLS_COUNT)+"...";
         }
-        sb.append("...");
+        if (lines.length > PREVIEW_LINES_COUNT) {
+            sb.append("...");
+        }
         return sb.toString();
     }
 
