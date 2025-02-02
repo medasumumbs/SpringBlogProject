@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление нового поста</title>
+  <link rel="stylesheet" th:href="@{/css/posts.css}"/>
+</head>
+<body>
+<form enctype="multipart/form-data" th:method="PATCH" th:action="@{/posts/{id}(id=${post.getId()})}" th:object="${post}" class="shadow post" >
+  <div class="post shadow">
+    <label for="title">Заголовок поста: </label>
+    <input id="title" th:field="*{title}" name="title">
+    <br/>
+  </div>
+  <div class="post shadow">
+    <label for="content">Содержимое поста: </label>
+    <textarea id="content" th:field="*{content}" name="content"></textarea>
+    <br/>
+  </div>
+  <div class="post shadow">
+    <label for="image">Изображение: </label>
+    <input id="image" type="file" name="image" accept="image/*" >
+    <label for="deleteImg">Удалить текущее изображение</label>
+    <input id="deleteImg" name="deleteImg" type="checkbox">
+    <br/>
+  </div>
+  <div class="post shadow">
+    <label for="tagsString">Тэги через запятую</label>
+    <input id="tagsString" name="tagsString" th:field="*{tagsString}">
+    <br/>
+  </div>
+  <input type="submit" value="Редактировать">
+</form>
+</body>
+</html>

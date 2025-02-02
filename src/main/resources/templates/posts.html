@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Лента</title>
+    <link rel="stylesheet" th:href="@{/css/posts.css}"/>
+</head>
+<body>
+<div class="shadow post horizontal_block">
+    <form>
+        <label for="pageSize">Количество постов на одной странице:</label>
+        <select  id="pageSize" name="pageSize">
+            <option th:selected="${pageSize==1}" id="1" th:value="1">1</option>
+            <option th:selected="${pageSize==10}" id="10" th:value="10">10</option>
+            <option th:selected="${pageSize==20}" id="20" th:value="20">20</option>
+            <option th:selected="${pageSize==50}" id="50" th:value="50">50</option>
+        </select>
+        <label for="tagInput" >Введите необходимый тэг:</label>
+        <input name="tag" id="tagInput" type="text" th:value="${tag}"/>
+        <input name="page" type="hidden" th:value="${postsPage.number + 1}"/>
+        <input value="Поиск" type="submit" th:method="GET" th:action="@{/posts}"/>
+    </form>
+</div>
+<div class="shadow post horizontal_block">
+    <a th:href="@{/posts/add}">Добавить новый пост</a>
+</div>
+<div class="post shadow horizontal_block">
+    Выбор страницы:
+</div>
+<div th:if="${postsPage.totalPages > 0}" class="post shadow horizontal_block"
+     th:each="pageNumber : ${pageNumbers}">
+    <a class="shadow post" th:href="@{/posts(pageSize=${postsPage.size}, page=${pageNumber}, tag=${tag})}"
+       th:text="${pageNumber}"
+       th:class="${pageNumber==postsPage.number + 1} ? active"></a>
+</div>
+<div class="shadow post" th:each="post : ${posts}">
+    <h2><a th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}"></a></h2>
+    <span style="white-space: pre-line" th:text="${post.getPreviewText()}"></span>
+    <br/>
+    <img height="300" width="300" th:src="'data:image/png;base64, '+${post.getPictureBase64()}"></img>
+    <br/>
+    <div class="post shadow horizontal_block">
+        <span  th:text="'Количество комментариев:' + ${post.getCommentsCount()}" ></span>
+    </div>
+    <div class="post shadow horizontal_block">
+        <span  th:text="'Количество лайков:' + ${post.getLikesCount()}" ></span>
+    </div>
+    <div class="post shadow horizontal_block">
+        <span  th:text="'Тэги: ' + ${post.getTagsString()}" ></span>
+    </div>
+    <br/>
+    <div class="post shadow horizontal_block">
+        <a th:href="@{/posts/{id}/edit(id=${post.getId()})}">Редактировать</a>
+    </div>
+</div>
+</body>
+</html>

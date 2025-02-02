@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Содержимое поста</title>
+    <link rel="stylesheet" th:href="@{/css/posts.css}"/>
+    <script language="JavaScript">
+        function switchVisibility(commentId, commentsCollectionSize) {
+            ///Открыть комментарий на редактирование
+            if (document.getElementById('comment'+commentId).style === "display:none") {
+                switchCommentEditingOff(commentId);
+            } else {
+                switchCommentEditingOn(commentId);
+            }
+            ///Заблокировать остальные окна редактирования комментариев
+            for (let i = 1; i <= commentsCollectionSize; i++){
+                if (i === commentId) continue;
+                switchCommentEditingOff(i);
+            }
+        }
+        function switchCommentEditingOff(commentId) {
+            document.getElementById('comment' + commentId).style = "display:block"
+            document.getElementById('commentForm' + commentId).style = "display:none"
+        }
+        function switchCommentEditingOn(commentId) {
+            document.getElementById('comment' + commentId).style = "display:none"
+            document.getElementById('commentForm' + commentId).style = "display:block"
+            window.onkeyup = null;
+            window.addEventListener("keyup" ,function (e) {
+                if ((e.key === 'Enter') && (e.ctrlKey)) {
+                    document.getElementById('commentForm' + commentId).submit();
+                }
+            })
+        }
+        // По нажатию Escape редактирование выключается
+        function addEscapeListener() {
+            window.addEventListener("keydown" ,function (e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll(".commentEditForm").forEach(
+                        (item) => {
+                            switchCommentEditingOff(item.getAttribute("id").split("commentForm")[1])
+                        }
+                    )
+                }
+            })
+        }
+    </script>
+</head>
+<body onload="addEscapeListener()">
+<div class="shadow post">
+    <h2 th:text="${post.getTitle()}"></h2>
+    <span th:text="${post.getContent()}"></span>
+    <br/>
+    <img height="300" width="300" th:src="'data:image/png;base64, '+${post.getPictureBase64()}"></img>
+    <br/>
+    <div class="post shadow horizontal_block">
+        <span  th:text="'Количество комментариев:' + ${post.getCommentsCount()}" ></span>
+    </div>
+    <div class="post shadow horizontal_block">
+        <span  th:text="'Количество лайков:' + ${post.getLikesCount()}" ></span>
+    </div>
+    <div class="post shadow horizontal_block">
+        <span  th:text="'Тэги: ' + ${post.getTagsString()}" ></span>
+    </div>
+    <div class="post shadow horizontal_block">
+        <form th:method="POST" th:action="@{/likes}">
+            <input name="post" type="hidden" th:value="${post.getId()}">
+            <button type="submit" >Лайкнуть</button>
+        </form>
+    </div>
+    <div class="post shadow horizontal_block">
+        <form th:method="DELETE"  th:action="@{/posts/{id}(id=${post.getId()})}">
+            <button type="submit" >Удалить пост</button>
+        </form>
+    </div>
+
+    <br/>
+</div>
+<div class="shadow post">
+    Комментарии:
+    <div class="post shadow">
+        <form th:method="POST" th:action="@{/comments}">
+            <input name="post" type="hidden" th:value="${post.getId()}">
+            <textarea name="text"></textarea>
+            <button type="submit" >Добавить комментарий</button>
+        </form>
+    </div>
+    <div th:each="comment: ${post.getComments()}" class="shadow post" >
+        <span th:id="'comment'+${comment.getId()}"
+              th:onclick="switchVisibility([[ ${comment.getId()} ]],[[${post.getComments().size()}]])"
+              th:text="${comment.getText()}"></span>
+        <form class="commentEditForm" th:id="'commentForm'+${comment.getId()}" style="display:none"
+              th:method="PATCH"
+              th:action="@{/comments/{id}(id=${comment.getId()})}">
+            <textarea th:text="${comment.getText()}" name="text"></textarea>
+            <input type="hidden" name="post" th:value="${comment.getPost().getId()}"/>
+            <input type="submit" value="Отредактировать комментарий">
+        </form>
+        <div class="shadow post horizontal_block">
+            <form th:method="DELETE" th:action="@{/comments/{id}(id=${comment.getId()})}">
+                <input type="hidden" name="post" th:value="${comment.getPost().getId()}"/>
+                <input type="submit" value="Удалить комментарий"/>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
