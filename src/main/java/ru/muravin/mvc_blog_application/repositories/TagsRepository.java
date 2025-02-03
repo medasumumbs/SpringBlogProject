@@ -21,4 +21,6 @@ public interface TagsRepository extends JpaRepository<Tag, Long> {
     @Modifying
     @Query("DELETE FROM Tag tag WHERE tag.post = :post")
     void deleteAllByPost(@Param("post") Post post);
+
+    long countAllByTag(String tag);
 }

@@ -1,5 +1,6 @@
 package ru.muravin.mvc_blog_application.services;
 
+import org.springframework.data.domain.PageRequest;
 import ru.muravin.mvc_blog_application.model.Post;
 import ru.muravin.mvc_blog_application.model.Tag;
 import ru.muravin.mvc_blog_application.repositories.LikesRepository;
@@ -58,12 +59,28 @@ public class PostsService {
     }
 
     public Page<Post> findByTag(String tagValue, Pageable pageable) {
+        // Получаем количество всех привязок тэгов к постам, чтобы корректно отобразить пагинацию
+        var countAll = tagsRepository.countAllByTag(tagValue);
+        int pageNumber = pageable.getPageNumber();
+        if (countAll < (long) (pageable.getPageSize() * pageable.getPageNumber() + 1)) {
+            // Если в базе меньше записей, чем хочет получить пагинатор - возвращаем последнюю возможную страницу
+            pageNumber = (int) (countAll / pageable.getPageSize() - 1);
+            if (pageNumber < 0) pageNumber = 0;
+            pageable = PageRequest.of(pageNumber, pageable.getPageSize());
+        }
         var tags = tagsRepository.findAllByTag(tagValue, pageable);
         var result = new ArrayList<Post>();
+        // Все множество, кроме загруженной страницы выше, инициализируется как null
+        for (int i = 0; i < pageable.getPageNumber()* pageable.getPageSize(); i++) {
+            result.add(null);
+        }
         tags.forEach(tag -> {
             result.add(postsRepository.findById(tag.getPost().getId()).orElse(null));
         });
         result.forEach(this::enrichPost);
+        for (int i = result.size(); i < countAll; i++) {
+            result.add(null);
+        }
         return listToPage(pageable, result);
     }
     public void enrichPost(Post post) {
