@@ -22,13 +22,13 @@ public class Post {
     @Column(name = "post_id")
     private Long id;
 
-    @Column(name = "title")
+    @Column(name = "title",columnDefinition = "VARCHAR(1024)")
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content",columnDefinition = "VARCHAR(1024)")
     private String content;
 
-    @Column(name = "picture_base_64")
+    @Column(name = "picture_base_64", columnDefinition = "BLOB")
     private String pictureBase64;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
