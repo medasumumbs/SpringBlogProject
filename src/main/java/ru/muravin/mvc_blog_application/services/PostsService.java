@@ -3,6 +3,7 @@ package ru.muravin.mvc_blog_application.services;
 import org.springframework.data.domain.PageRequest;
 import ru.muravin.mvc_blog_application.model.Post;
 import ru.muravin.mvc_blog_application.model.Tag;
+import ru.muravin.mvc_blog_application.repositories.CommentsRepository;
 import ru.muravin.mvc_blog_application.repositories.LikesRepository;
 import ru.muravin.mvc_blog_application.repositories.PostsRepository;
 import ru.muravin.mvc_blog_application.repositories.TagsRepository;
@@ -25,12 +26,14 @@ public class PostsService {
     private final LikesRepository likesRepository;
     private final TagsRepository tagsRepository;
     private final PostsRepository postsRepository;
+    private final CommentsRepository commentsRepository;
 
     @Autowired
-    public PostsService(PostsRepository postsRepository, LikesRepository likesRepository, TagsRepository tagsRepository) {
+    public PostsService(PostsRepository postsRepository, LikesRepository likesRepository, TagsRepository tagsRepository, CommentsRepository commentsRepository) {
         this.postsRepository = postsRepository;
         this.likesRepository = likesRepository;
         this.tagsRepository = tagsRepository;
+        this.commentsRepository = commentsRepository;
     }
 
     public Optional<Post> findOne(Long id) {
@@ -109,6 +112,9 @@ public class PostsService {
     }
 
     public void deletePost(Long postId) {
+        tagsRepository.deleteByPost_Id(postId);
+        likesRepository.deleteByPost_Id(postId);
+        commentsRepository.deleteByPost_Id(postId);
         postsRepository.deleteById(postId);
     }
     public void updatePost(Post post, Boolean deleteImage) {

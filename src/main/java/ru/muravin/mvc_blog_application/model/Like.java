@@ -18,7 +18,7 @@ public class Like {
     @Column(name = "like_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "post_id",referencedColumnName = "post_id")
     private Post post;
 

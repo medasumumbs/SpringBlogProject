@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LikesRepository extends JpaRepository<Like, Long> {
     public Integer countLikesByPost(Post post);
+
+    void deleteByPost_Id(Long postId);
 }

@@ -23,4 +23,6 @@ public interface TagsRepository extends JpaRepository<Tag, Long> {
     void deleteAllByPost(@Param("post") Post post);
 
     long countAllByTag(String tag);
+
+    void deleteByPost_Id(Long postId);
 }
