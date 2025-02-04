@@ -1,6 +1,9 @@
 package ru.muravin.mvc_blog_application.serviceTest;
 
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockReset;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.muravin.mvc_blog_application.MvcBlogApplication;
@@ -17,7 +20,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.muravin.mvc_blog_application.serviceTest.PostsServiceTest.getMockPost;
 
-@SpringBootTest(classes = MvcBlogApplication.class)
+@SpringBootTest()
+@ActiveProfiles("test")
 public class CommentsServiceTest {
 
     @Autowired
@@ -29,10 +33,15 @@ public class CommentsServiceTest {
     @MockitoBean(reset = MockReset.BEFORE)
     private PostsRepository postsRepository;
 
+    @Captor
+    private ArgumentCaptor<Comment> commentCaptor;
+
     @Test() void saveTest() {
         var testComment = getTestComment();
         commentsService.save(testComment);
         Mockito.verify(commentsRepository, Mockito.times(1)).save(testComment);
+        Mockito.verify(commentsRepository).save(commentCaptor.capture());
+        assertEquals(testComment, commentCaptor.getValue());
     }
 
     @Test() void findCommentByIdTest() {

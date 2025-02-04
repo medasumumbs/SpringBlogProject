@@ -1,6 +1,9 @@
 package ru.muravin.mvc_blog_application.serviceTest;
 
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockReset;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.muravin.mvc_blog_application.model.Comment;
@@ -11,7 +14,6 @@ import ru.muravin.mvc_blog_application.repositories.PostsRepository;
 import ru.muravin.mvc_blog_application.repositories.TagsRepository;
 import ru.muravin.mvc_blog_application.services.PostsService;
 import ru.muravin.mvc_blog_application.utils.PageableUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class PostsServiceTest {
     @Autowired
     private PostsService postsService;
@@ -35,6 +38,9 @@ public class PostsServiceTest {
     private LikesRepository likesRepository;
     @MockitoBean(reset = MockReset.BEFORE)
     private TagsRepository tagsRepository;
+
+    @Captor
+    private ArgumentCaptor<Post> postCaptor;
 
     @Test
     void testFindPostById() {
@@ -147,6 +153,8 @@ public class PostsServiceTest {
         post.setTagsString("tag1,tag2");
         postsService.save(post);
         Mockito.verify(postsRepository).save(post);
+        Mockito.verify(postsRepository).save(postCaptor.capture());
+        assertEquals(post, postCaptor.getValue());
         verify(tagsRepository, times(2)).save(any(Tag.class));
     }
 
