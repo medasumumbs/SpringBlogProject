@@ -1,5 +1,8 @@
 package ru.muravin.mvc_blog_application.serviceTest;
 
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockReset;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.muravin.mvc_blog_application.model.Comment;
 import ru.muravin.mvc_blog_application.model.Post;
 import ru.muravin.mvc_blog_application.model.Tag;
@@ -10,13 +13,10 @@ import ru.muravin.mvc_blog_application.services.PostsService;
 import ru.muravin.mvc_blog_application.utils.PageableUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,22 +25,16 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
+@SpringBootTest
 public class PostsServiceTest {
     @Autowired
     private PostsService postsService;
-    @Autowired
+    @MockitoBean(reset = MockReset.BEFORE)
     private PostsRepository postsRepository;
-    @Autowired
+    @MockitoBean(reset = MockReset.BEFORE)
     private LikesRepository likesRepository;
-    @Autowired
+    @MockitoBean(reset = MockReset.BEFORE)
     private TagsRepository tagsRepository;
-
-    @BeforeEach
-    void setUp() {
-        Mockito.reset(postsRepository, likesRepository, tagsRepository);
-    }
 
     @Test
     void testFindPostById() {
@@ -98,25 +92,27 @@ public class PostsServiceTest {
         var secondTag = getTag(2L);
         var firstPost = firstTag.getPost();
         var secondPost = secondTag.getPost();
-        Pageable pageable = PageRequest.of(1, 3);
         Mockito.when(tagsRepository.findAllByTag(any(), any())).thenReturn(
-                List.of(firstTag, secondTag)
+                List.of(firstTag)
         );
         Mockito.when(postsRepository.findById(1L)).thenReturn(Optional.of(firstPost));
         Mockito.when(postsRepository.findById(2L)).thenReturn(Optional.of(secondPost));
-        pageable = PageRequest.of(0, 1);
+        Mockito.when(tagsRepository.countAllByTag(any())).thenReturn(2L);
+        Pageable pageable = PageRequest.of(0, 1);
 
         var result = postsService.findByTag("tag", pageable);
         assertNotNull(result);
-        assertEquals(2, result.getTotalElements());
-        assertEquals(2, result.getTotalPages());
-        assertEquals(1, result.getContent().getFirst().getId());
+        assertEquals(2, result.getTotalElements(), "wrong number of elements");
+        assertEquals(2, result.getTotalPages(), "wrong number of pages");
+        assertEquals(1, result.getContent().getFirst().getId(), "wrong first tag");
 
         Pageable pageable2 = PageRequest.of(1, 1);
+        Mockito.when(tagsRepository.findAllByTag(any(), any())).thenReturn(
+                List.of(secondTag)
+        );
         result = postsService.findByTag("tag", pageable2);
         assertNotNull(result);
-        assertEquals(2, result.getContent().getFirst().getId());
-
+        assertEquals(2, result.getContent().getLast().getId(), "wrong first tag id");
     }
 
     @Test
@@ -199,7 +195,7 @@ public class PostsServiceTest {
     }
 
     public static Post getMockPost(Long i) {
-        Post mockPost = new Post(
+        return new Post(
                 i,
                 "Новый пост",
                 "Content",
@@ -208,7 +204,6 @@ public class PostsServiceTest {
                 0,
                 ""
         );
-        return mockPost;
     }
 
 

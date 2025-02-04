@@ -45,7 +45,7 @@
 ```
 - Тесты могут быть запущены командой
 ```
- .\gradlew.bat bootTest
+ .\gradlew.bat test
 ```
 - Приложение будет доступно по адресу http://localhost:8080/posts
 

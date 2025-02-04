@@ -1,18 +1,17 @@
 package ru.muravin.mvc_blog_application.mvcTest;
 
-import ru.muravin.mvc_blog_application.configurations.DataSourceConfiguration;
-import ru.muravin.mvc_blog_application.configurations.WebConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import ru.muravin.mvc_blog_application.controllers.LikesController;
 import ru.muravin.mvc_blog_application.model.Post;
 import ru.muravin.mvc_blog_application.repositories.LikesRepository;
 import ru.muravin.mvc_blog_application.repositories.PostsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,13 +19,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, WebConfiguration.class})
-@WebAppConfiguration
-@TestPropertySource(locations = "classpath:application.properties")
+@SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
 public class LikesControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
-
+    @Autowired
     private MockMvc mockMvc;
     @Autowired
     private LikesRepository likesRepository;
@@ -35,9 +34,7 @@ public class LikesControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         likesRepository.deleteAll();
-        //postsRepository.deleteAll();
         var post = new Post();
         post.setTitle("Test Post");
         post.setContent("Test Content");

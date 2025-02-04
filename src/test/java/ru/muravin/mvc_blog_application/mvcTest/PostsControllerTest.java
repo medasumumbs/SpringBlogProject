@@ -1,9 +1,13 @@
 package ru.muravin.mvc_blog_application.mvcTest;
 
-import ru.muravin.mvc_blog_application.configurations.DataSourceConfiguration;
-import ru.muravin.mvc_blog_application.configurations.WebConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import ru.muravin.mvc_blog_application.controllers.PostsController;
 import ru.muravin.mvc_blog_application.model.Post;
 import ru.muravin.mvc_blog_application.repositories.CommentsRepository;
+import ru.muravin.mvc_blog_application.repositories.LikesRepository;
 import ru.muravin.mvc_blog_application.repositories.PostsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,9 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import ru.muravin.mvc_blog_application.repositories.TagsRepository;
 
 import java.util.ArrayList;
 
@@ -28,19 +30,23 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, WebConfiguration.class})
-@WebAppConfiguration
-@TestPropertySource(locations = "classpath:application.properties")
+@SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
 class PostsControllerTest {
 
     @Autowired
     private PostsRepository postsRepository;
     @Autowired
     private WebApplicationContext webApplicationContext;
-
+    @Autowired
     private MockMvc mockMvc;
     @Autowired
     private CommentsRepository commentsRepository;
+    @Autowired
+    private TagsRepository tagsRepository;
+    @Autowired
+    private LikesRepository likesRepository;
 
     @BeforeEach
     @Transactional()
@@ -48,6 +54,8 @@ class PostsControllerTest {
         System.out.println("setUp");
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         // Очистка и заполнение тестовых данных в базе
+        tagsRepository.deleteAll();
+        likesRepository.deleteAll();
         commentsRepository.deleteAll();
         postsRepository.deleteAll();
         var post4 = getPost(4L);
@@ -89,7 +97,7 @@ class PostsControllerTest {
     }
 
     @Test void getWithIdShouldReturnView() throws Exception {
-        mockMvc.perform(get("/posts/{id}", 14L))
+        mockMvc.perform(get("/posts/{id}", postsRepository.findAll().get(0).getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("posts/show"))
                 .andExpect(model().attributeExists("post"));
@@ -113,10 +121,11 @@ class PostsControllerTest {
     }
 
     @Test void updatePostShouldSavePostAndRedirectToIndex() throws Exception {
+        var id = postsRepository.findAll().get(0).getId();
         MockMultipartFile file = new MockMultipartFile("data", "dummy.csv",
                 "text/plain", "123".getBytes());
         MockMultipartHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.multipart("/posts/19");
+                MockMvcRequestBuilders.multipart("/posts/"+id);
         builder.with(new RequestPostProcessor() {
             @Override
             public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
@@ -124,7 +133,7 @@ class PostsControllerTest {
                 return request;
             }
         });
-        var post = postsRepository.findById(19L).get();
+        var post = postsRepository.findById(id).get();
         post.setId(null);
         var oldTitle = post.getTitle();
         mockMvc.perform(builder.file("image", file.getBytes())
@@ -135,8 +144,8 @@ class PostsControllerTest {
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"));
-        post = postsRepository.findById(19L).get();
-        assertTrue(postsRepository.existsById(19L));
+        post = postsRepository.findById(id).get();
+        assertTrue(postsRepository.existsById(id));
         assertEquals("MTIz", post.getPictureBase64());
         assertEquals(oldTitle+"abcde", post.getTitle());
     }

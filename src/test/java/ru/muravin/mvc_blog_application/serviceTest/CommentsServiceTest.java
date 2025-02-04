@@ -1,42 +1,33 @@
 package ru.muravin.mvc_blog_application.serviceTest;
 
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockReset;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import ru.muravin.mvc_blog_application.MvcBlogApplication;
 import ru.muravin.mvc_blog_application.model.Comment;
 import ru.muravin.mvc_blog_application.repositories.CommentsRepository;
 import ru.muravin.mvc_blog_application.repositories.PostsRepository;
 import ru.muravin.mvc_blog_application.services.CommentsService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 import static ru.muravin.mvc_blog_application.serviceTest.PostsServiceTest.getMockPost;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {CommentsServiceTest.TestConfig.class})
+@SpringBootTest(classes = MvcBlogApplication.class)
 public class CommentsServiceTest {
 
     @Autowired
     private CommentsService commentsService;
 
-    @Autowired
+    @MockitoBean(reset = MockReset.BEFORE)
     private CommentsRepository commentsRepository;
 
-    @Autowired
+    @MockitoBean(reset = MockReset.BEFORE)
     private PostsRepository postsRepository;
-
-    @BeforeEach
-    void setUp() {
-        Mockito.reset(commentsRepository);
-    }
 
     @Test() void saveTest() {
         var testComment = getTestComment();
@@ -55,19 +46,5 @@ public class CommentsServiceTest {
 
     private Comment getTestComment() {
         return new Comment(getMockPost(1L),"Good");
-    }
-
-    @Configuration
-    public static class TestConfig {
-        @Bean public CommentsService commentsService(CommentsRepository commentsRepository, PostsRepository postsRepository) {
-            return new CommentsService(commentsRepository, postsRepository);
-        }
-        @Bean public PostsRepository postsRepository() {
-            return Mockito.mock(PostsRepository.class);
-        }
-        @Bean
-        public CommentsRepository commentsRepository() {
-            return mock(CommentsRepository.class);
-        }
     }
 }
