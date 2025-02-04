@@ -6,7 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockReset;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import ru.muravin.mvc_blog_application.MvcBlogApplication;
 import ru.muravin.mvc_blog_application.model.Comment;
 import ru.muravin.mvc_blog_application.repositories.CommentsRepository;
 import ru.muravin.mvc_blog_application.repositories.PostsRepository;

@@ -1,10 +1,8 @@
 package ru.muravin.mvc_blog_application.mvcTest;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import ru.muravin.mvc_blog_application.controllers.PostsController;
 import ru.muravin.mvc_blog_application.model.Post;
 import ru.muravin.mvc_blog_application.repositories.CommentsRepository;
 import ru.muravin.mvc_blog_application.repositories.LikesRepository;
